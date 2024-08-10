@@ -4,6 +4,9 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <iomanip>
+#include <sstream>
+#include <string>
 
 // DEFINIÇÃO DE CONSTANTES E TIPOS
 #define SUCESSO (00)
@@ -99,6 +102,15 @@ Address DefinePosition(Group group)
     }
 }
 
+std::string AddressToHexadecimal(Address address)
+{
+  std::stringstream stream;
+  stream << "0x" 
+         << std::setfill ('0') << std::setw(sizeof(Address)*2) 
+         << std::hex << address;
+  return stream.str();
+}
+
 void PrintGroupInOutputFile(int groupIndex)
 {
     Group group = _groups[groupIndex];
@@ -112,7 +124,10 @@ void PrintGroupInOutputFile(int groupIndex)
         if (group.cache[i] == UNDEFINED_CACHE_VALUE)
             fprintf(_outputFile, "%03d 0\n", line);
         else
-            fprintf(_outputFile, "%03d 1 %08x\n", line, group.cache[i]);
+        {
+            std::string address = AddressToHexadecimal(group.cache[i]);
+            fprintf(_outputFile, "%03d 1 %s\n", line, address.c_str());
+        }
     }
 }
 
@@ -123,7 +138,7 @@ void SaveStateToOutputFile()
     
     fprintf(_outputFile, "\n");
     fprintf(_outputFile, "#hits: %d\n", _hitts);
-    fprintf(_outputFile, "#miss: %d\n", _misses);
+    fprintf(_outputFile, "#miss: %d", _misses);
 }
 
 void PerformCacheSimulation()
@@ -132,18 +147,21 @@ void PerformCacheSimulation()
     while (fscanf(_inputFile, "%x", &address) != EOF)
     {
         Group group = DefineGroup(address);
+
+        for (int i = 0; i < _inputGroupSize; i++)
+        {
+            if (group.cache[i] == address)
+            {
+                _hitts++;
+                break;
+            }
+        }
+
         Address position = DefinePosition(group);
 
-        if (group.cache[position] == address)
-        {
-            _hitts++;
-        }
-        else
-        {
-            _misses++;
-            group.cache[position] = address;
-            group.fifo.push(position);
-        }
+        _misses++;
+        group.cache[position] = address;
+        group.fifo.push(position);
     }
 }
 
