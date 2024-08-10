@@ -62,8 +62,10 @@ void OpenFiles()
     }
 }
 
-void Setup()
+void Setup(int argc, char const *argv[])
 {
+    ParseArguments(argc, argv);
+
     _groups = new Group[_inputGroupSize];
     for (int i = 0; i < _inputGroupSize; i++)
     {
@@ -114,13 +116,18 @@ void PrintGroupInOutputFile(int groupIndex)
     }
 }
 
-// PROGRAMA PRINCIPAL
-int main(int argc, char const *argv[])
+void SaveStateToOutputFile()
 {
-    // Inicialização dos dados
-    ParseArguments(argc, argv);
-    Setup();
+    for (int i = 0; i < _inputGroupSize; i++)
+        PrintGroupInOutputFile(i);
+    
+    fprintf(_outputFile, "\n");
+    fprintf(_outputFile, "#hits: %d\n", _hitts);
+    fprintf(_outputFile, "#miss: %d\n", _misses);
+}
 
+void PerformCacheSimulation()
+{
     Address address;
     while (fscanf(_inputFile, "%x", &address) != EOF)
     {
@@ -138,18 +145,32 @@ int main(int argc, char const *argv[])
             group.fifo.push(position);
         }
     }
+}
 
+void MemoryClean()
+{
     for (int i = 0; i < _inputGroupSize; i++)
-        PrintGroupInOutputFile(i);
-    
-    fprintf(_outputFile, "\n");
-    fprintf(_outputFile, "#hits: %d\n", _hitts);
-    fprintf(_outputFile, "#miss: %d\n", _misses);
+        delete[] _groups[i].cache;
 
-    // Limpeza da memória e fechamento dos arquivos
     delete[] _groups;
+
     fclose(_inputFile);
     fclose(_outputFile);
+}
+
+int main(int argc, char const *argv[])
+{
+    // Inicialização dos dados
+    Setup(argc, argv);
+
+    // Simulação da cache
+    PerformCacheSimulation();
+
+    // Salva o estado final no arquivo de saída
+    SaveStateToOutputFile();
+
+    // Limpeza da memória
+    MemoryClean();
 
     return SUCESSO;
 }
