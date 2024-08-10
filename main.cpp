@@ -8,7 +8,14 @@
 // DEFINIÇÃO DE CONSTANTES E TIPOS
 #define SUCESSO (00)
 #define UNDEFINED_CACHE_VALUE (-1)
+
 typedef uint32_t Address;
+typedef struct Group
+{
+    Address* cache;
+    std::queue<Address> fifo;
+} Group;
+
 const char* OUTPUT_FILE_NAME = "output.txt";
 
 // VARIÁVEIS GLOBAIS
@@ -18,8 +25,7 @@ unsigned int _misses = 0;
 int _inputCacheSize, _inputLineSize, _inputGroupSize;
 const char* _inputFileName;
 
-Address* _cache;
-std::queue<Address>* _fifo;
+Group* _groups;
 
 FILE* _inputFile = NULL;
 FILE* _outputFile = NULL;
@@ -58,59 +64,53 @@ void OpenFiles()
 
 void Setup()
 {
-    _cache = new Address[_inputCacheSize];
-    for (int i = 0; i < _inputCacheSize; i++)
+    _groups = new Group[_inputGroupSize];
+    for (int i = 0; i < _inputGroupSize; i++)
     {
-        _cache[i] = UNDEFINED_CACHE_VALUE;
+        _groups[i].cache = new Address[_inputLineSize * _inputGroupSize];
+        for (int j = 0; j < _inputLineSize * _inputGroupSize; j++)
+        {
+            _groups[i].cache[j] = UNDEFINED_CACHE_VALUE;
+        }
     }
-
-    _fifo = new std::queue<Address>[_inputCacheSize / _inputGroupSize];
 
     OpenFiles();
 }
 
-Address GroupIndex(Address address)
+Group DefineGroup(Address address)
 {
-    return (address / _inputLineSize) % _inputGroupSize;
+    int index = (address / _inputLineSize) % _inputGroupSize;
+    return _groups[index];
 }
 
-Address DefinePosition(Address address)
+Address DefinePosition(Group group)
 {
-    int groupIndex = GroupIndex(address);
-    int groupStart = groupIndex * _inputGroupSize;
-    int groupEnd = groupStart + _inputGroupSize;
-
-    for (int i = groupStart; i < groupEnd; i++)
+    if (group.fifo.size() < _inputGroupSize)
     {
-        if (_cache[i] == UNDEFINED_CACHE_VALUE)
-            return i;
+        return group.fifo.size();
     }
-
-    Address addressToReplace = _fifo[groupIndex].front();
-    _fifo[groupIndex].pop();
-
-    return addressToReplace;
+    else
+    {
+        Address position = group.fifo.front();
+        group.fifo.pop();
+        return position;
+    }
 }
 
 void PrintGroupInOutputFile(int groupIndex)
 {
-    int groupStart = groupIndex * _inputGroupSize;
-    int groupEnd = groupStart + _inputGroupSize;
+    Group group = _groups[groupIndex];
 
     fprintf(_outputFile, "================\n");
     fprintf(_outputFile, "IDX V ** ADDR **\n");
-    for (int i = groupStart; i < groupEnd; i++)
-    {
-        // ID DEFINIDO DE FORMA ESTÁTICA, ALTERAR DEPOIS
-        int lineIndex = i % _inputGroupSize;
-        if (_cache[i] != UNDEFINED_CACHE_VALUE)
-        {
-            fprintf(_outputFile, "%.3d %d %08x\n", lineIndex, 1, _cache[i]);
-        }
+    
+    for (int i = 0; i < _inputGroupSize; i++)
+    {   
+        int line = i + (groupIndex * _inputGroupSize);
+        if (group.cache[i] == UNDEFINED_CACHE_VALUE)
+            fprintf(_outputFile, "%03d 0\n", line);
         else
-        {
-            fprintf(_outputFile, "%.3d %d\n", lineIndex, 0);
-        }
+            fprintf(_outputFile, "%03d 1 %08x\n", line, group.cache[i]);
     }
 }
 
@@ -124,45 +124,32 @@ int main(int argc, char const *argv[])
     Address address;
     while (fscanf(_inputFile, "%x", &address) != EOF)
     {
-        int groupIndex = GroupIndex(address);
-        int groupStart = groupIndex * _inputGroupSize;
-        int groupEnd = groupStart + _inputGroupSize;
+        Group group = DefineGroup(address);
+        Address position = DefinePosition(group);
 
-        bool hit = false;
-        for (int i = groupStart; i < groupEnd; i++)
-        {
-            if (_cache[i] == address)
-            {
-                hit = true;
-                break;
-            }
-        }
-
-        if (hit)
+        if (group.cache[position] == address)
         {
             _hitts++;
         }
         else
         {
             _misses++;
-            Address position = DefinePosition(address);
-            _cache[position] = address;
-            _fifo[groupIndex].push(address);
+            group.cache[position] = address;
+            group.fifo.push(position);
         }
     }
 
-    for (int i = 0; i < 3; i++)
-    {
+    for (int i = 0; i < _inputGroupSize; i++)
         PrintGroupInOutputFile(i);
-    }
     
     fprintf(_outputFile, "\n");
     fprintf(_outputFile, "#hits: %d\n", _hitts);
     fprintf(_outputFile, "#miss: %d\n", _misses);
 
-    // Limpeza da memória
-    delete[] _cache;
-    delete[] _fifo;
+    // Limpeza da memória e fechamento dos arquivos
+    delete[] _groups;
+    fclose(_inputFile);
+    fclose(_outputFile);
 
     return SUCESSO;
 }
