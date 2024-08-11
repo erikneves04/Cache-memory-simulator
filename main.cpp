@@ -84,22 +84,21 @@ void Setup(int argc, char const *argv[])
 
 Group DefineGroup(Address address)
 {
-    int index = (address / _inputLineSize) % _inputGroupSize;
+    int index = address % _inputGroupSize;
     return _groups[index];
 }
 
 Address DefinePosition(Group group)
 {
-    if (group.fifo.size() < _inputGroupSize)
+    for(int i = 0; i < _inputGroupSize; i++)
     {
-        return group.fifo.size();
+        if (group.cache[i] == UNDEFINED_CACHE_VALUE)
+            return i;
     }
-    else
-    {
-        Address position = group.fifo.front();
-        group.fifo.pop();
-        return position;
-    }
+
+    Address position = group.fifo.front();
+    group.fifo.pop();
+    return position;
 }
 
 std::string AddressToHexadecimal(Address address)
