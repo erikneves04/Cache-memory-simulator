@@ -38,7 +38,7 @@ void Setup(int argc, char const *argv[])
 
     _ioManager = new IOManager(_inputFileName);
 
-    int setsSize = _inputCacheSize / _inputGroupSize;
+    int setsSize = _inputCacheSize / (_inputGroupSize * _inputLineSize);
     _sets = std::vector<Set>(setsSize, Set(_inputGroupSize));
 }
 
@@ -50,7 +50,7 @@ void PerformCacheSimulation()
     for (int i = 0; i < inputsSize; i++)
     {
         Address input = inputs[i];
-        int setIndex = (input >> _inputLineSize) & (_inputGroupSize - 1);
+        int setIndex = (input / (_inputLineSize * _sets.size())) % _sets.size();
 
         Result result = _sets[setIndex].Insert(input);
 
