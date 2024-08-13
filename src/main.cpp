@@ -1,0 +1,79 @@
+#include <stdio.h>
+#include <iostream>
+
+#include "Constantes.hpp"
+#include "Set.hpp"
+#include "IOManager.hpp"
+
+// DECLARAÇÃO DE VARIÁVEIS GLOBAIS
+unsigned int _hitts = 0;
+unsigned int _misses = 0;
+
+int _inputCacheSize, _inputLineSize, _inputGroupSize;
+const char* _inputFileName;
+
+std::vector<Set> _sets;
+
+// DEFINIÇÃO DOS SERVIÇOS
+IOManager* _ioManager;
+
+// FUNÇÕES AUXILIARES
+void ParseArguments(int argc, char const *argv[])
+{
+    if (argc != 5)
+    {
+        printf("Número de argumentos inválido. Uso: <cache-size> <line-size> <set-size> <input-file-name>");
+        exit(1);
+    }
+
+    _inputCacheSize = atoi(argv[1]);
+    _inputLineSize = atoi(argv[2]);
+    _inputGroupSize = atoi(argv[3]);
+    _inputFileName = argv[4];
+}
+
+void Setup(int argc, char const *argv[])
+{
+    ParseArguments(argc, argv);
+
+    _ioManager = new IOManager(_inputFileName);
+
+    int setsSize = _inputCacheSize / _inputGroupSize;
+    _sets = std::vector<Set>(setsSize, Set(_inputGroupSize));
+}
+
+void PerformCacheSimulation()
+{
+    std::vector<Address> inputs = _ioManager->ListInputs();
+    int inputsSize = (int)inputs.size();
+
+    for (int i = 0; i < inputsSize; i++)
+    {
+        Address input = inputs[i];
+        int setIndex = (input >> _inputLineSize) & (_inputGroupSize - 1);
+
+        Result result = _sets[setIndex].Insert(input);
+
+        if (result == HIT)
+            _hitts++;
+        else
+            _misses++;
+    }
+}
+
+int main(int argc, char const *argv[])
+{
+    // Inicialização dos dados
+    Setup(argc, argv);
+
+    // Simulação da cache
+    PerformCacheSimulation();
+
+    // Salva o estado final no arquivo de saída
+    _ioManager->WriteOutuput(_hitts, _misses, _sets);
+
+    // Limpeza da memória
+    delete _ioManager;
+
+    return SUCESSO;
+}
