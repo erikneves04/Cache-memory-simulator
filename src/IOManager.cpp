@@ -62,13 +62,13 @@ void IOManager::PrintGroupInOutputFile(Set set, int index)
         bool valid = cache[i].first;
         Address address = cache[i].second;
 
-        int line = i + (index * chacheSize);
+        // int line = i + (index * chacheSize);
         if (valid)
-            fprintf(_outputFile, "%03d 0\n", line);
+            fprintf(_outputFile, "%03d 0\n", i);
         else
         {
             std::string hexaAddress = AddressToHexadecimal(address);
-            fprintf(_outputFile, "%03d 1 %s\n", line, hexaAddress.c_str());
+            fprintf(_outputFile, "%03d 1 %s\n", i, hexaAddress.c_str());
         }
     }
 }

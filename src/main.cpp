@@ -22,7 +22,7 @@ void ParseArguments(int argc, char const *argv[])
 {
     if (argc != 5)
     {
-        printf("Número de argumentos inválido. Uso: <cache-size> <line-size> <set-size> <input-file-name>");
+        printf("Número de argumentos inválido. Uso: <cache-size> <line-size> <set-size> <input-file-name>\n");
         exit(1);
     }
 
@@ -39,7 +39,8 @@ void Setup(int argc, char const *argv[])
     _ioManager = new IOManager(_inputFileName);
 
     int setsSize = _inputCacheSize / (_inputGroupSize * _inputLineSize);
-    _sets = std::vector<Set>(setsSize, Set(_inputGroupSize));
+    int GroupsSize = _inputCacheSize / _inputLineSize;
+    _sets = std::vector<Set>(setsSize, Set(GroupsSize));
 }
 
 void PerformCacheSimulation()
