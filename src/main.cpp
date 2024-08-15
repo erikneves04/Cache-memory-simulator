@@ -57,7 +57,10 @@ void PerformCacheSimulation()
         if (result == HIT)
             _hitts++;
         else
+        {
             _misses++;
+            _ioManager->WriteOutuputGroups(_sets);
+        }
     }
 }
 
@@ -69,8 +72,8 @@ int main(int argc, char const *argv[])
     // Simulação da cache
     PerformCacheSimulation();
 
-    // Salva o estado final no arquivo de saída
-    _ioManager->WriteOutuput(_hitts, _misses, _sets);
+    // Salva as estatísticas finais
+    _ioManager->WriteOutputStatistics(_hitts, _misses);
 
     // Limpeza da memória
     delete _ioManager;

@@ -52,9 +52,6 @@ std::string AddressToHexadecimal(Address address)
 
 void IOManager::PrintGroupInOutputFile(Set set, int index)
 {
-    fprintf(_outputFile, "================\n");
-    fprintf(_outputFile, "IDX V ** ADDR **\n");
-    
     std::vector<std::pair<bool, Address>> cache = set.GetCache();
     int chacheSize = (int)cache.size();
     for (int i = 0; i < chacheSize; i++)
@@ -62,7 +59,7 @@ void IOManager::PrintGroupInOutputFile(Set set, int index)
         bool valid = cache[i].first;
         Address address = cache[i].second;
 
-        int line = i + (index * chacheSize);
+        int line = i + index ;
         if (valid)
             fprintf(_outputFile, "%03d 0\n", line);
         else
@@ -73,12 +70,19 @@ void IOManager::PrintGroupInOutputFile(Set set, int index)
     }
 }
 
-void IOManager::WriteOutuput(int hitts, int misses, std::vector<Set> sets)
+void IOManager::WriteOutuputGroups(std::vector<Set> sets)
 {
+    fprintf(_outputFile, "================\n");
+    fprintf(_outputFile, "IDX V ** ADDR **\n");
+
     for (int i = 0; i < (int)sets.size(); i++)
         PrintGroupInOutputFile(sets[i], i);
-    
+
     fprintf(_outputFile, "\n");
+}
+
+void IOManager::WriteOutputStatistics(int hitts, int misses)
+{
     fprintf(_outputFile, "#hits: %d\n", hitts);
     fprintf(_outputFile, "#miss: %d", misses);
 }
