@@ -3,7 +3,6 @@
 Set::Set(int setSize)
 {
     _cache = std::vector<std::pair<bool, Address>>(setSize, std::make_pair(false, UNDEFINED_CACHE_VALUE));
-    _isFull = false;
     _cacheSize = setSize;
 }
 
@@ -12,7 +11,6 @@ Set::~Set()
 
 Result Set::Insert(Address address)
 {
-
     for (int i = 0; i < _cacheSize; i++)
     {
         if (_cache[i].first && _cache[i].second == address)
@@ -28,7 +26,6 @@ Result Set::Insert(Address address)
             return MISS;
         }
     }
-
 
     int topPosition = _fifo.front();
     _fifo.pop();
