@@ -12,32 +12,28 @@ Set::~Set()
 
 Result Set::Insert(Address address)
 {
+
     for (int i = 0; i < _cacheSize; i++)
     {
-        if (_cache[i].second == address)
+        if (_cache[i].first && _cache[i].second == address)
             return HIT;
     }
 
-    if (_isFull)
+    for (int i = 0; i < _cacheSize; i++)
     {
-        int topPosition = _fifo.front();
-        _fifo.pop();
-        _cache[topPosition] = std::make_pair(true, address);
-    }
-    else
-    {
-        _isFull = (int)_fifo.size() == _cacheSize;
-
-        for (int i = 0; i < _cacheSize; i++)
+        if (_cache[i].first == false)
         {
-            if (_cache[i].first == false)
-            {
-                _cache[i] = std::make_pair(true, address);
-                _fifo.push(i);
-                return MISS;
-            }
+            _cache[i] = std::make_pair(true, address);
+            _fifo.push(i);
+            return MISS;
         }
     }
+
+
+    int topPosition = _fifo.front();
+    _fifo.pop();
+    _cache[topPosition] = std::make_pair(true, address);
+    _fifo.push(topPosition);
 
     return MISS;
 }
