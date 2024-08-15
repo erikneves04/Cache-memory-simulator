@@ -13,9 +13,10 @@ class Set
         std::vector<std::pair<bool, Address>> _cache;
         std::queue<int> _fifo;
         int _cacheSize;
+        int _offsetBits;
 
     public:
-        Set(int setSize);
+        Set(int setSize, int offsetBits);
         ~Set();
 
         Result Insert(Address address);
