@@ -16,9 +16,14 @@ class IOManager
 
         void PrintGroupInOutputFile(Set set, int index);
 
+         int offsetBits;
+
     public:
         IOManager(const char* inputFileName);
         ~IOManager();
+
+        void SetOffsetBits(int offset);
+        Address GetBlockIdentifier(Address address);
 
         std::vector<Address> ListInputs();
         void WriteOutputGroups(std::vector<Set> sets);

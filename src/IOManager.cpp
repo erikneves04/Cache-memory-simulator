@@ -5,6 +5,10 @@
 #include <iostream>
 #include "IOManager.hpp"
 
+void IOManager::SetOffsetBits(int offset) {
+    this->offsetBits = offset; // Corrigido para atribuir ao membro correto
+}
+
 IOManager::IOManager(const char* inputFileName)
 {
     _inputFile = fopen(inputFileName, "r");
@@ -50,10 +54,8 @@ std::string AddressToHexadecimal(Address address)
     return stream.str();
 }
 
-Address GetBlockIdentifier(Address address)
-{
-    Address blockAddress = (address >> 10) & 0xFFFFFFFF;
-   
+Address IOManager::GetBlockIdentifier(Address address) {
+    Address blockAddress = (address >> this->offsetBits) & 0xFFFFFFFF;
     return blockAddress;
 }
 

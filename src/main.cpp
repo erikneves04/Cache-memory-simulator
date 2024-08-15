@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <iostream>
+#include <cmath>
 
 #include "Constantes.hpp"
 #include "Set.hpp"
@@ -40,6 +41,9 @@ void Setup(int argc, char const *argv[])
 
     int setsSize = _inputCacheSize / (_inputGroupSize * _inputLineSize);
     _sets = std::vector<Set>(setsSize, Set(_inputGroupSize));
+    int offsetBits = std::log2(_inputLineSize);
+
+     _ioManager->SetOffsetBits(offsetBits);
 }
 
 void PerformCacheSimulation()
