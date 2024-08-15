@@ -6,10 +6,6 @@
 #include "IOManager.hpp"
 #include "utils.hpp"
 
-// void IOManager::SetOffsetBits(int offset) {
-//     this->offsetBits = offset; // Corrigido para atribuir ao membro correto
-// }
-
 IOManager::IOManager(const char* inputFileName)
 {
     _inputFile = fopen(inputFileName, "r");

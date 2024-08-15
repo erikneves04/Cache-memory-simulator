@@ -21,11 +21,10 @@ Result Set::Insert(Address address)
     for (int i = 0; i < _cacheSize; i++)
     {
         if (_cache[i].first && _cache[i].second == blockIdentifier) {
-            // printf("Entra\n");
             return HIT;
         }
     }
-    
+
     for (int i = 0; i < _cacheSize; i++)
     {
         if (_cache[i].first == false)
