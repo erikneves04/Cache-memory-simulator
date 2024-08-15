@@ -4,10 +4,7 @@
 #include <iomanip>
 #include <iostream>
 #include "IOManager.hpp"
-
-void IOManager::SetOffsetBits(int offset) {
-    this->offsetBits = offset; // Corrigido para atribuir ao membro correto
-}
+#include "utils.hpp"
 
 IOManager::IOManager(const char* inputFileName)
 {
@@ -54,11 +51,6 @@ std::string AddressToHexadecimal(Address address)
     return stream.str();
 }
 
-Address IOManager::GetBlockIdentifier(Address address) {
-    Address blockAddress = (address >> this->offsetBits) & 0xFFFFFFFF;
-    return blockAddress;
-}
-
 void IOManager::PrintGroupInOutputFile(Set set, int index)
 {
     std::vector<std::pair<bool, Address>> cache = set.GetCache();
@@ -71,8 +63,7 @@ void IOManager::PrintGroupInOutputFile(Set set, int index)
         int line = i + (index * cacheSize);
         if (valid)
         {
-            Address blockIdentifier = GetBlockIdentifier(address);
-            std::string hexaAddress = AddressToHexadecimal(blockIdentifier);
+            std::string hexaAddress = AddressToHexadecimal(address);
             fprintf(_outputFile, "%03d 1 %s\n", line, hexaAddress.c_str());
         }
         else
