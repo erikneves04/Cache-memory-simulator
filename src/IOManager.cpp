@@ -43,11 +43,11 @@ std::vector<Address> IOManager::ListInputs()
 
 std::string AddressToHexadecimal(Address address)
 {
-  std::stringstream stream;
-  stream << "0x" 
-         << std::setfill ('0') << std::setw(sizeof(Address)*2) 
-         << std::hex << address;
-  return stream.str();
+    std::stringstream stream;
+    stream << "0x" 
+           << std::setfill('0') << std::setw(sizeof(Address)*2) 
+           << std::hex << std::uppercase << address;
+    return stream.str();
 }
 
 void IOManager::PrintGroupInOutputFile(Set set, int index)
