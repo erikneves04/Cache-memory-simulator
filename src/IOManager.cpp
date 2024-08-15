@@ -77,12 +77,11 @@ void IOManager::WriteOutuputGroups(std::vector<Set> sets)
 
     for (int i = 0; i < (int)sets.size(); i++)
         PrintGroupInOutputFile(sets[i], i);
-
-    fprintf(_outputFile, "\n");
 }
 
 void IOManager::WriteOutputStatistics(int hitts, int misses)
 {
+    fprintf(_outputFile, "\n");
     fprintf(_outputFile, "#hits: %d\n", hitts);
     fprintf(_outputFile, "#miss: %d", misses);
 }
