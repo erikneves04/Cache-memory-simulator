@@ -43,42 +43,55 @@ std::vector<Address> IOManager::ListInputs()
 
 std::string AddressToHexadecimal(Address address)
 {
-  std::stringstream stream;
-  stream << "0x" 
-         << std::setfill ('0') << std::setw(sizeof(Address)*2) 
-         << std::hex << address;
-  return stream.str();
+    std::stringstream stream;
+    stream << "0x" 
+           << std::setfill('0') << std::setw(sizeof(Address)*2) 
+           << std::hex << std::uppercase << address;
+    return stream.str();
+}
+
+Address GetBlockIdentifier(Address address)
+{
+    Address blockAddress = (address >> 10) & 0xFFFFFFFF;
+   
+    return blockAddress;
 }
 
 void IOManager::PrintGroupInOutputFile(Set set, int index)
 {
-    fprintf(_outputFile, "================\n");
-    fprintf(_outputFile, "IDX V ** ADDR **\n");
-    
     std::vector<std::pair<bool, Address>> cache = set.GetCache();
-    int chacheSize = (int)cache.size();
-    for (int i = 0; i < chacheSize; i++)
+    int cacheSize = (int)cache.size();
+    for (int i = 0; i < cacheSize; i++)
     {   
         bool valid = cache[i].first;
         Address address = cache[i].second;
 
-        int line = i + (index * chacheSize);
+        int line = i + index;
         if (valid)
-            fprintf(_outputFile, "%03d 0\n", line);
+        {
+            Address blockIdentifier = GetBlockIdentifier(address);
+            std::string hexaAddress = AddressToHexadecimal(blockIdentifier);
+            fprintf(_outputFile, "%03d 1 %s\n", line, hexaAddress.c_str());
+        }
         else
         {
-            std::string hexaAddress = AddressToHexadecimal(address);
-            fprintf(_outputFile, "%03d 1 %s\n", line, hexaAddress.c_str());
+            fprintf(_outputFile, "%03d 0\n", line);
         }
     }
 }
 
-void IOManager::WriteOutuput(int hitts, int misses, std::vector<Set> sets)
+void IOManager::WriteOutputGroups(std::vector<Set> sets)
 {
+    fprintf(_outputFile, "================\n");
+    fprintf(_outputFile, "IDX V ** ADDR **\n");
+
     for (int i = 0; i < (int)sets.size(); i++)
         PrintGroupInOutputFile(sets[i], i);
-    
+}
+
+void IOManager::WriteOutputStatistics(int hits, int misses)
+{
     fprintf(_outputFile, "\n");
-    fprintf(_outputFile, "#hits: %d\n", hitts);
+    fprintf(_outputFile, "#hits: %d\n", hits);
     fprintf(_outputFile, "#miss: %d", misses);
 }
