@@ -68,7 +68,7 @@ void IOManager::PrintGroupInOutputFile(Set set, int index)
         bool valid = cache[i].first;
         Address address = cache[i].second;
 
-        int line = i + index;
+        int line = i + (index * cacheSize);
         if (valid)
         {
             Address blockIdentifier = GetBlockIdentifier(address);
