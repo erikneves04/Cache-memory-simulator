@@ -16,12 +16,18 @@ class IOManager
 
         void PrintGroupInOutputFile(Set set, int index);
 
+         int offsetBits;
+
     public:
         IOManager(const char* inputFileName);
         ~IOManager();
 
+        void SetOffsetBits(int offset);
+        Address GetBlockIdentifier(Address address);
+
         std::vector<Address> ListInputs();
-        void WriteOutuput(int hitts, int misses, std::vector<Set> sets);
+        void WriteOutputGroups(std::vector<Set> sets);
+        void WriteOutputStatistics(int hitts, int misses);
 };
 
 #endif

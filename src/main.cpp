@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <iostream>
+#include <cmath>
 
 #include "Constantes.hpp"
 #include "Set.hpp"
@@ -39,8 +40,10 @@ void Setup(int argc, char const *argv[])
     _ioManager = new IOManager(_inputFileName);
 
     int setsSize = _inputCacheSize / (_inputGroupSize * _inputLineSize);
-    int GroupsSize = _inputCacheSize / _inputLineSize;
-    _sets = std::vector<Set>(setsSize, Set(GroupsSize));
+    _sets = std::vector<Set>(setsSize, Set(_inputGroupSize));
+    int offsetBits = std::log2(_inputLineSize);
+
+     _ioManager->SetOffsetBits(offsetBits);
 }
 
 void PerformCacheSimulation()
@@ -58,7 +61,10 @@ void PerformCacheSimulation()
         if (result == HIT)
             _hitts++;
         else
+        {
             _misses++;
+            _ioManager->WriteOutputGroups(_sets);
+        }
     }
 }
 
@@ -70,8 +76,8 @@ int main(int argc, char const *argv[])
     // Simulação da cache
     PerformCacheSimulation();
 
-    // Salva o estado final no arquivo de saída
-    _ioManager->WriteOutuput(_hitts, _misses, _sets);
+    // Salva as estatísticas finais
+    _ioManager->WriteOutputStatistics(_hitts, _misses);
 
     // Limpeza da memória
     delete _ioManager;
