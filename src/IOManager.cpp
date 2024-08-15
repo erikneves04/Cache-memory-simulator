@@ -61,11 +61,13 @@ void IOManager::PrintGroupInOutputFile(Set set, int index)
 
         int line = i + index ;
         if (valid)
-            fprintf(_outputFile, "%03d 0\n", line);
-        else
         {
             std::string hexaAddress = AddressToHexadecimal(address);
             fprintf(_outputFile, "%03d 1 %s\n", line, hexaAddress.c_str());
+        }
+        else
+        {
+            fprintf(_outputFile, "%03d 0\n", line);
         }
     }
 }
