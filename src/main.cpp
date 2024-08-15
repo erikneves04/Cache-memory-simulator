@@ -59,7 +59,7 @@ void PerformCacheSimulation()
         else
         {
             _misses++;
-            _ioManager->WriteOutuputGroups(_sets);
+            _ioManager->WriteOutputGroups(_sets);
         }
     }
 }

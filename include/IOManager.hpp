@@ -21,7 +21,7 @@ class IOManager
         ~IOManager();
 
         std::vector<Address> ListInputs();
-        void WriteOutuputGroups(std::vector<Set> sets);
+        void WriteOutputGroups(std::vector<Set> sets);
         void WriteOutputStatistics(int hitts, int misses);
 };
 

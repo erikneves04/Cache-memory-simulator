@@ -50,11 +50,18 @@ std::string AddressToHexadecimal(Address address)
     return stream.str();
 }
 
+Address GetBlockIdentifier(Address address)
+{
+    Address blockAddress = (address >> 10) & 0xFFFFFFFF;
+   
+    return blockAddress;
+}
+
 void IOManager::PrintGroupInOutputFile(Set set, int index)
 {
     std::vector<std::pair<bool, Address>> cache = set.GetCache();
-    int chacheSize = (int)cache.size();
-    for (int i = 0; i < chacheSize; i++)
+    int cacheSize = (int)cache.size();
+    for (int i = 0; i < cacheSize; i++)
     {   
         bool valid = cache[i].first;
         Address address = cache[i].second;
@@ -62,7 +69,8 @@ void IOManager::PrintGroupInOutputFile(Set set, int index)
         int line = i + index;
         if (valid)
         {
-            std::string hexaAddress = AddressToHexadecimal(address);
+            Address blockIdentifier = GetBlockIdentifier(address);
+            std::string hexaAddress = AddressToHexadecimal(blockIdentifier);
             fprintf(_outputFile, "%03d 1 %s\n", line, hexaAddress.c_str());
         }
         else
@@ -72,7 +80,7 @@ void IOManager::PrintGroupInOutputFile(Set set, int index)
     }
 }
 
-void IOManager::WriteOutuputGroups(std::vector<Set> sets)
+void IOManager::WriteOutputGroups(std::vector<Set> sets)
 {
     fprintf(_outputFile, "================\n");
     fprintf(_outputFile, "IDX V ** ADDR **\n");
@@ -81,9 +89,9 @@ void IOManager::WriteOutuputGroups(std::vector<Set> sets)
         PrintGroupInOutputFile(sets[i], i);
 }
 
-void IOManager::WriteOutputStatistics(int hitts, int misses)
+void IOManager::WriteOutputStatistics(int hits, int misses)
 {
     fprintf(_outputFile, "\n");
-    fprintf(_outputFile, "#hits: %d\n", hitts);
+    fprintf(_outputFile, "#hits: %d\n", hits);
     fprintf(_outputFile, "#miss: %d", misses);
 }
