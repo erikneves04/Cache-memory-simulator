@@ -40,10 +40,8 @@ void Setup(int argc, char const *argv[])
     _ioManager = new IOManager(_inputFileName);
 
     int setsSize = _inputCacheSize / (_inputGroupSize * _inputLineSize);
-    _sets = std::vector<Set>(setsSize, Set(_inputGroupSize));
     int offsetBits = std::log2(_inputLineSize);
-
-     _ioManager->SetOffsetBits(offsetBits);
+    _sets = std::vector<Set>(setsSize, Set(_inputGroupSize, offsetBits));
 }
 
 void PerformCacheSimulation()
