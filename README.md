@@ -1,5 +1,5 @@
 # Cache-memory-simulator
- 
+
 Instruções para Compilação e Execução do Simulador de Cache
 
 Requisitos:
@@ -11,7 +11,6 @@ Requisitos:
 Passos para Compilação:
 
 1. Acesse o diretório principal do projeto.
-
 2. Compile o programa:
    Execute o comando abaixo para compilar o programa:
    make
@@ -23,6 +22,7 @@ Passos para Execução:
    Para rodar o simulador de cache, utilize o seguinte comando:
    `./simulador <tamanho da cache> <tamanho da linha> <tamanho do conjunto> <nome do arquivo de entrada>`
    Substitua os parâmetros conforme necessário:
+
    - `<tamanho da cache>`: O tamanho total da cache em bytes.
    - `<tamanho da linha>`: O tamanho de cada linha da cache em bytes.
    - `<tamanho do conjunto>`: O número de linhas em cada conjunto (associatividade).
@@ -30,12 +30,11 @@ Passos para Execução:
 
    Exemplo de uso:
    ./simulador 1024 64 4 enderecos.txt
-
 2. Saída do programa:
    A saída da simulação será gravada em um arquivo chamado `output.txt` no mesmo diretório em que o simulador foi executado.
 
 Integrantes do grupo:
 
-Erik Roberto Reis Neves - 2022093040 </br>
-Gabriel </br>
+Erik Roberto Reis Neves - 2022093040 `</br>`
+Gabriel Campos Prudente - 2022069425 `</br>`
 Gabriella de Lima Araujo - 2022104786
