@@ -35,6 +35,6 @@ Passos para Execução:
 
 Integrantes do grupo:
 
-Erik Roberto Reis Neves - 2022093040 `</br>`
-Gabriel Campos Prudente - 2022069425 `</br>`
+Erik Roberto Reis Neves - 2022093040 </br>
+Gabriel Campos Prudente - 2022069425 </br>
 Gabriella de Lima Araujo - 2022104786
