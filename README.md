@@ -21,12 +21,12 @@ Passos para Execução:
 
 1. Execute o simulador:
    Para rodar o simulador de cache, utilize o seguinte comando:
-   ./simulador <tamanho da cache> <tamanho da linha> <tamanho do conjunto> <nome do arquivo de entrada>
+   `./simulador <tamanho da cache> <tamanho da linha> <tamanho do conjunto> <nome do arquivo de entrada>`
    Substitua os parâmetros conforme necessário:
-   - <tamanho da cache>: O tamanho total da cache em bytes.
-   - <tamanho da linha>: O tamanho de cada linha da cache em bytes.
-   - <tamanho do conjunto>: O número de linhas em cada conjunto (associatividade).
-   - <nome do arquivo de entrada>: O nome do arquivo de texto contendo os endereços de memória a serem simulados.
+   - `<tamanho da cache>`: O tamanho total da cache em bytes.
+   - `<tamanho da linha>`: O tamanho de cada linha da cache em bytes.
+   - `<tamanho do conjunto>`: O número de linhas em cada conjunto (associatividade).
+   - `<nome do arquivo de entrada>`: O nome do arquivo de texto contendo os endereços de memória a serem simulados.
 
    Exemplo de uso:
    ./simulador 1024 64 4 enderecos.txt
@@ -36,6 +36,6 @@ Passos para Execução:
 
 Integrantes do grupo:
 
-Erik Roberto Reis Neves - 2022093040
-Gabriel
+Erik Roberto Reis Neves - 2022093040 </br>
+Gabriel </br>
 Gabriella de Lima Araujo - 2022104786
